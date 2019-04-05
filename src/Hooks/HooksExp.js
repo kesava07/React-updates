@@ -2,30 +2,24 @@ import React, { useState, useEffect, memo } from 'react';
 import Header from '../Header/Header';
 
 const Hooks = () => {
-    const [name, setName] = useState("Hooks");
+    const name = useForm("chenna", "first name");
+    const surname = useForm("kesava", "last name");
+    useTitle(name.value);
+    const width = useWidth();  
+    
+    return (
+        <React.Fragment>
+            <Header />
+            <h1>UseState hooks</h1>
+            <input  {...name} />
+            <input {...surname} />
+            <h1>Window Width from Hooks: {width}</h1>
+        </React.Fragment>
+    )
+};
+export default memo(Hooks);
 
-    // const [data, setData] = useState([]);
-
-    const handleChange = (event) => {
-        setName(event.target.value)
-    }
-    useEffect(() => {
-        document.title = name;
-
-        // getData();
-    });
-
-    // const getData = () => {
-    //     fetch("https://jsonplaceholder.typicode.com/todos/1")
-    //         .then(response => response.json())
-    //         .then(result => {
-    //             setData(result)
-    //         })
-    // }
-    // console.log(data, "chenna")
-
-    //****************   resizing the window width using hooks    ***************//
-
+const useWidth = () => {
     const [width, setWidth] = useState(window.innerWidth);
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
@@ -33,20 +27,23 @@ const Hooks = () => {
         return () => {
             window.removeEventListener('resize', handleResize)
         }
-    })
-
-    return (
-        <React.Fragment>
-            <Header />
-            <h1>UseState hooks</h1>
-            <input
-                style={{ marginLeft: "100px" }}
-                placeholder="Name"
-                value={name}
-                onChange={handleChange}
-            />
-            <h1>Window Width from Hooks: {width}</h1>
-        </React.Fragment>
-    )
+    });
+    return width;
 };
-export default memo(Hooks);
+const useForm = (initialValue, placeholder) => {
+    const [value, setvalue] = useState(initialValue);
+    const handleChange = (e) => {
+        setvalue(e.target.value)
+    }
+    return {
+        value: value,
+        onChange: handleChange,
+        placeholder: placeholder
+    }
+};
+
+const useTitle = (title) => {
+    useEffect(() => {
+        document.title = title;
+    });
+}
